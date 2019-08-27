@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.sonata.pizzaordermanager.util.ApplicationConstants;
 import com.sonata.pizzaordermanger.model.Order;
 
 @SpringBootApplication
@@ -37,7 +38,7 @@ public class PizzaOrderManagerApplication {
 	 */
 	private List<Order> loadOrders(){
 		 List<String> orders=new ArrayList<String>();
-        File file = new File("src/main/resources/sample_data_ordered.txt");
+        File file = new File(ApplicationConstants.INPUT_FILE);
         try (BufferedReader br = new BufferedReader(new FileReader(file)))  {
             String line;
             boolean flag = true; 
@@ -53,9 +54,9 @@ public class PizzaOrderManagerApplication {
                } 
             }
         } catch(FileNotFoundException fnfe) {
-            System.out.println("File not found.");
+        	logger.error("File not found=="+fnfe);
         } catch(IOException io) {
-            System.out.println("Cannot read file.");
+        	logger.error("Cannot read file."+io);
         }
        return sortOrdersByTime(orders);
 	}
@@ -87,7 +88,7 @@ public class PizzaOrderManagerApplication {
 	
 	private void saveOrdersToFile(List<Order> list) {
 		try {
-		    BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/orders.txt"));
+		    BufferedWriter writer = new BufferedWriter(new FileWriter(ApplicationConstants.DESTINATION_FILE));
 		    writer.write("Orders"+"		"+"Time");
 		    writer.newLine();
 		    for (Order order : list) {
@@ -95,10 +96,11 @@ public class PizzaOrderManagerApplication {
                  writer.newLine();
                 }
             writer.close();
+            System.out.println("saved to file find in the path src/main/resources/orders.txt");
 		} catch (FileNotFoundException e) {
-		    e.printStackTrace();
+			logger.error("File not found=="+e);
 		} catch (IOException e) {
-		    e.printStackTrace();
+			logger.error("Cannot read file."+e);
 		}
 	}
 }
