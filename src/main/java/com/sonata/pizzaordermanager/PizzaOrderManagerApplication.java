@@ -24,10 +24,13 @@ import com.sonata.pizzaordermanger.model.Order;
 public class PizzaOrderManagerApplication {
 
 	Logger logger= LoggerFactory.getLogger(PizzaOrderManagerApplication.class);
-	
+	static String inputFile;
+	static String outputFile;
 	public static void main(String[] args) {
 		SpringApplication.run(PizzaOrderManagerApplication.class, args);
 		System.out.println("Welcome to Pizza store");
+		inputFile=args[0];
+		outputFile=args[1];
 		List<Order> sortedOrders=new PizzaOrderManagerApplication().loadOrders();
 		new PizzaOrderManagerApplication().saveOrdersToFile(sortedOrders);
 	}
@@ -38,7 +41,7 @@ public class PizzaOrderManagerApplication {
 	 */
 	private List<Order> loadOrders(){
 		 List<String> orders=new ArrayList<String>();
-        File file = new File(ApplicationConstants.INPUT_FILE);
+        File file = new File(inputFile);
         try (BufferedReader br = new BufferedReader(new FileReader(file)))  {
             String line;
             boolean flag = true; 
@@ -88,7 +91,7 @@ public class PizzaOrderManagerApplication {
 	
 	private void saveOrdersToFile(List<Order> list) {
 		try {
-		    BufferedWriter writer = new BufferedWriter(new FileWriter(ApplicationConstants.DESTINATION_FILE));
+		    BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 		    writer.write("Orders"+"		"+"Time");
 		    writer.newLine();
 		    for (Order order : list) {
@@ -96,7 +99,7 @@ public class PizzaOrderManagerApplication {
                  writer.newLine();
                 }
             writer.close();
-            System.out.println("saved to file find in the path src/main/resources/orders.txt");
+            System.out.println("saved to file find in the path "+outputFile);
 		} catch (FileNotFoundException e) {
 			logger.error("File not found=="+e);
 		} catch (IOException e) {
